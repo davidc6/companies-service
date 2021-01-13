@@ -1,0 +1,6 @@
+extension: 'ts'
+recursive: true
+require: 
+  - '@babel/register'
+  - 'test/babel-register'
+  

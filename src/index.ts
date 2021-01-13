@@ -3,11 +3,7 @@ import express from 'express'
 const app = express()
 
 app.get('/', (req, res) => {
-  res.send("We got signal!")
+  res.status(200).json({ status: 'ok' })
 })
 
-const PORT = 8080;
-
-app.listen(PORT, () => {
-  console.log(`Listening at http://localhost:${PORT}`)
-})
+export default app
