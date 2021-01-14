@@ -1,5 +1,6 @@
 import http from 'http'
 import app from '../index'
+import config from 'config'
 
 const init = () => {
   const normalizePort = (port) => {
@@ -15,9 +16,9 @@ const init = () => {
 
     return false
   }
-  
-  const PORT = normalizePort(process.env.PORT || 8080)
-  
+
+  const PORT = normalizePort(process.env.PORT || config.get('port'))
+
   const onError = (e) => {
     if (e.syscall !== 'listen') {
       throw e
@@ -50,7 +51,7 @@ const init = () => {
   }
 
   const server = http.createServer(app)
-  server.listen(PORT)
+  server.listen(config.get('port'))
   server.on('listening', onListening)
   server.on('error', onError)
 }
