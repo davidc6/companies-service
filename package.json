@@ -7,7 +7,7 @@
     "start": "node dist/.bin/www.js",
     "build": "rm -rf dist && tsc",
     "dev": "nodemon ./src/.bin/www",
-    "test": "mocha"
+    "test": "mocha --ALLOW_CONFIG_MUTATIONS=true --exit"
   },
   "repository": {
     "type": "git",
