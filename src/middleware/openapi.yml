@@ -1,0 +1,37 @@
+openapi: 3.0.1
+info:
+  title: Companies API
+  description: This is the Companies API
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: 0.2.0
+paths:
+  /:
+    get:
+      summary: Returns available resources
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Root'
+  /companies:
+    get:
+      summary: Gets a list of companies
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company'
+components:
+  schemas:
+    Root:
+      type: object
+    Company:
+      type: array
+      items:
+        type: object
