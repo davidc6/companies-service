@@ -5,7 +5,7 @@ import * as domain from '../../src/utils/domain'
 
 const sandbox = sinon.createSandbox()
 
-describe('domain util', () => {
+describe('domain utility', () => {
 
   afterEach(() => {
     sandbox.restore()
