@@ -4,10 +4,11 @@
   "description": "A service that provides information about various companies",
   "main": "index.js",
   "scripts": {
-    "start": "node dist/.bin/www.js",
     "build": "rm -rf dist && tsc",
+    "coverage": "nyc npm run test",
     "dev": "nodemon ./src/.bin/www",
     "eslint": "eslint src && eslint src/.bin",
+    "start": "node dist/.bin/www.js",
     "test": "mocha --ALLOW_CONFIG_MUTATIONS=true --exit"
   },
   "repository": {
@@ -33,6 +34,7 @@
     "@babel/preset-env": "^7.12.11",
     "@babel/preset-typescript": "^7.12.7",
     "@babel/register": "^7.12.10",
+    "@istanbuljs/nyc-config-typescript": "^1.0.1",
     "@types/eslint": "^7.2.6",
     "@types/express": "^4.17.11",
     "@types/mocha": "^8.2.0",
@@ -42,7 +44,9 @@
     "eslint": "^7.18.0",
     "mocha": "^8.2.1",
     "nodemon": "^2.0.7",
+    "nyc": "^15.1.0",
     "sinon": "^9.2.3",
+    "source-map-support": "^0.5.19",
     "supertest": "^6.0.1",
     "typescript": "^4.1.3"
   }

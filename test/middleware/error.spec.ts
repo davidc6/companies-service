@@ -1,6 +1,4 @@
 import { expect } from 'chai'
-import sinon from 'sinon'
-import config from 'config'
 import request from 'supertest'
 import app from '../../src/index'
 
@@ -9,6 +7,6 @@ describe('error handler middleware', () => {
     const res = await request(app).get('/non-existent-route')
     
     expect(res.statusCode).to.equal(404)
-    expect(res.body).to.deep.equal({ message: 'not found' })
+    expect(res.body).to.deep.equal({ message: 'not found', })
   })
 })
