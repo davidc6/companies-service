@@ -1,13 +1,13 @@
-import { Request, Response, NextFunction } from 'express';
+import { Application, Request, Response, NextFunction } from 'express'
 
-const handleError = (app) => {
+const handleError = (app: Application) => {
   app.use((err, req: Request, res: Response, next: NextFunction) => {
     res
       .status(err.status || 500)
       .json({
-        message: err.message
-      });
-  });
+        message: err.message,
+      })
+  })
 }
 
 export { handleError }

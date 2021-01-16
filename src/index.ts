@@ -14,7 +14,7 @@ app.disable('x-powered-by')
 
 app.use(bodyParser.json())
 app.use(bodyParser.text())
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: false, }))
 
 openApi(app)
 handleError(app)

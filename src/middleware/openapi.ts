@@ -5,7 +5,7 @@ const openApi = (app) => {
   app.use(OpenApiValidator.middleware({
     apiSpec: `${path.join(__dirname, 'openapi.yml')}`,
     validateRequests: true,
-    validateResponses: true
+    validateResponses: true,
   }))                     
 }
 
