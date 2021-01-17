@@ -1,3 +1,3 @@
-const register = require('@babel/register').default;
+const register = require("@babel/register").default
 
-register({ extensions: ['.ts', '.js'] });
+register({ extensions: [".ts", ".js"] })

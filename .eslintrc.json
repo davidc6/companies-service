@@ -2,21 +2,12 @@
   "root": true,
   "parser": "@typescript-eslint/parser",
   "plugins": [
-    "@typescript-eslint"
+    "@typescript-eslint",
+    "prettier"
   ],
   "extends": [
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended"
-  ],
-  "rules": {
-    "comma-dangle": ["error", {
-      "arrays": "always",
-      "objects": "always",
-      "imports": "never",
-      "exports": "never",
-      "functions": "never"
-    }],
-    "semi": [2, "never"],
-    "max-len": ["error", { "code": 100 }]
-  }
+    "plugin:@typescript-eslint/recommended",
+    "prettier/@typescript-eslint",
+    "plugin:prettier/recommended"
+  ]
 }
