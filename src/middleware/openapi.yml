@@ -5,7 +5,7 @@ info:
   license:
     name: MIT
     url: https://opensource.org/licenses/MIT
-  version: 0.2.0
+  version: 0.3.0
 paths:
   /:
     get:
@@ -26,12 +26,33 @@ paths:
           content:
             application/json:
               schema:
+                $ref: '#/components/schemas/Companies'
+  /companies/{companyId}:
+    get:
+      summary: Gets data about a single company
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
                 $ref: '#/components/schemas/Company'
 components:
   schemas:
     Root:
       type: object
-    Company:
+    Companies:
       type: array
       items:
         type: object
+    Company:
+      type: object
+      properties:
+        id:
+          type: string
+        name: 
+          type: string
+        summary:
+          type: string
+        careers:
+          type: string

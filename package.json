@@ -1,6 +1,6 @@
 {
   "name": "companies-service",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A service that provides information about various companies",
   "main": "index.js",
   "scripts": {
