@@ -2,8 +2,9 @@ import express from 'express'
 import dotenv from 'dotenv'
 import bodyParser from 'body-parser'
 // middleware
-import { openApi } from './middleware/openapi'
-import { handleError } from './middleware/error'
+import { openApiValidator } from './middleware/openapi'
+import { errorHandler } from './middleware/error'
+import { loggerMiddleware } from './middleware/logger'
 // modules
 import { routes } from './routes'
 
@@ -15,9 +16,9 @@ app.disable('x-powered-by')
 app.use(bodyParser.json())
 app.use(bodyParser.text())
 app.use(bodyParser.urlencoded({ extended: false, }))
-
-openApi(app)
-handleError(app)
+app.use(loggerMiddleware)
+app.use(openApiValidator)
+app.use(errorHandler)
 
 routes(app)
 

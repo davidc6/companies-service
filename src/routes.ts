@@ -8,7 +8,7 @@ export const tempCompaniesResponse = [
   {"id": "ibm", "name": "IBM",},
 ]
 
-const routes = (app: Application) => {
+const routes = (app: Application): void => {
   app.get('/', (req: Request, res: Response) => {  
     const response = {
       "all_companies_url": `${getEnvBasedDomain()}/companies`,

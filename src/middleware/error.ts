@@ -1,13 +1,9 @@
-import { Application, Request, Response, NextFunction } from 'express'
+import { NextFunction, Request, Response } from 'express'
 
-const handleError = (app: Application) => {
-  app.use((err, req: Request, res: Response, next: NextFunction) => {
-    res
-      .status(err.status)
-      .json({
-        message: err.message,
-      })
-  })
+export const errorHandler = (err, req: Request, res: Response, next: NextFunction): void => {
+  res
+    .status(err.status)
+    .json({
+      message: err.message,
+    })
 }
-
-export { handleError }

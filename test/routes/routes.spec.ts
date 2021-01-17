@@ -1,9 +1,9 @@
 import request from 'supertest'
 import { expect } from 'chai'
 import sinon from 'sinon'
-import * as domain from '../src/utils/domain'
-import app from '../src/index'
-import { tempCompaniesResponse } from '../src/routes'
+import * as domain from '../../src/utils/domain'
+import app from '../../src/index'
+import { tempCompaniesResponse } from '../../src/routes'
 
 const sandbox = sinon.createSandbox()
 
