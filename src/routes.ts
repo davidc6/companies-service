@@ -15,6 +15,10 @@ export const tempCompanyData = {
   summary:
     "For more than a century IBM has been dedicated to every client's success and to creating innovations that matter for the world",
   careers: "https://www.ibm.com/employment/",
+  industry: "technology",
+  year_founded: 1911,
+  github: "https://github.com/IBM",
+  blog: "https://www.ibm.com/blogs/",
 }
 
 const routes = (app: Application): void => {
