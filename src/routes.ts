@@ -1,5 +1,6 @@
 import { Application, Response, Request } from "express"
 import { getEnvBasedDomain } from "./utils/domain"
+import { query } from "./db"
 
 // temporary stub
 export const tempCompaniesResponse = [
@@ -21,10 +22,18 @@ export const tempCompanyData = {
   blog: "https://www.ibm.com/blogs/",
 }
 
-const routes = (app: Application): void => {
-  app.get("/", (req: Request, res: Response) => {
+const mountRoutes = (app: Application): void => {
+  app.get("/", async (req: Request, res: Response) => {
     const response = {
       all_companies_url: `${getEnvBasedDomain()}/companies`,
+    }
+
+    try {
+      const dbResponse = await query("SELECT * FROM some_table")
+      // dbResponse.rows - includes rows returned by the query
+      // console.log(dbResponse)
+    } catch (e) {
+      console.log(e.message)
     }
 
     res.set({ Status: "200 OK" })
@@ -42,4 +51,4 @@ const routes = (app: Application): void => {
   })
 }
 
-export { routes }
+export { mountRoutes }

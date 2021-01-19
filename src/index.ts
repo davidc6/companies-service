@@ -6,7 +6,7 @@ import helmet from "helmet"
 import { openApiValidator } from "./middleware/openapi"
 import { errorHandler } from "./middleware/error"
 import { loggerMiddleware } from "./middleware/logger"
-import { routes } from "./routes"
+import { mountRoutes } from "./routes"
 
 dotenv.config()
 
@@ -22,6 +22,6 @@ app.use(loggerMiddleware)
 app.use(openApiValidator)
 app.use(errorHandler)
 
-routes(app)
+mountRoutes(app)
 
 export default app
