@@ -2,26 +2,6 @@ import { Application, Response, Request } from "express"
 import { getEnvBasedDomain } from "./utils/domain"
 import { query } from "./db"
 
-// temporary stub
-export const tempCompaniesResponse = [
-  { id: "slack", name: "Slack" },
-  { id: "google", name: "Google" },
-  { id: "ibm", name: "IBM" },
-]
-
-// temporary stub
-export const tempCompanyData = {
-  id: "ibm",
-  name: "IBM",
-  summary:
-    "For more than a century IBM has been dedicated to every client's success and to creating innovations that matter for the world",
-  careers: "https://www.ibm.com/employment/",
-  industry: "technology",
-  year_founded: 1911,
-  github: "https://github.com/IBM",
-  blog: "https://www.ibm.com/blogs/",
-}
-
 const mountRoutes = (app: Application): void => {
   app.get("/", async (req: Request, res: Response) => {
     const response = {
@@ -29,25 +9,40 @@ const mountRoutes = (app: Application): void => {
     }
 
     try {
-      const dbResponse = await query("SELECT * FROM some_table")
-      // dbResponse.rows - includes rows returned by the query
-      // console.log(dbResponse)
+      res.set({ Status: "200 OK" })
+      res.status(200).json(response)
     } catch (e) {
-      console.log(e.message)
+      res.set({ Status: "500 Internal Server Error" })
+      res.status(500).json({ message: "Sorry, something went wrong." })
     }
-
-    res.set({ Status: "200 OK" })
-    res.status(200).json(response)
   })
 
-  app.get("/companies", (req: Request, res: Response) => {
-    res.set({ Status: "200 OK" })
-    res.status(200).json(tempCompaniesResponse)
+  app.get("/companies", async (req: Request, res: Response) => {
+    try {
+      const { rows } = await query("SELECT company_id, name FROM companies")
+
+      res.set({ Status: "200 OK" })
+      res.status(200).json(rows)
+    } catch (e) {
+      res.set({ Status: "500 Internal Server Error" })
+      res.status(500).json({ message: "Sorry, something went wrong." })
+    }
   })
 
-  app.get("/companies/:id", (req: Request, res: Response) => {
-    res.set({ Status: "200 OK" })
-    res.status(200).json(tempCompanyData)
+  app.get("/companies/:id", async (req: Request, res: Response) => {
+    try {
+      const {
+        rows,
+      } = await query("SELECT company_id, name FROM companies WHERE company_id = $1 LIMIT 1", [
+        req.params.id,
+      ])
+
+      res.set({ Status: "200 OK" })
+      res.status(200).json(rows[0])
+    } catch (e) {
+      res.set({ Status: "500 Internal Server Error" })
+      res.status(500).json({ message: "Sorry, something went wrong." })
+    }
   })
 }
 
