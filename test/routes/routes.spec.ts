@@ -84,5 +84,15 @@ describe("routes", () => {
       expect(res.headers["content-type"]).to.equal("application/json; charset=utf-8")
       expect(res.body).to.deep.equal({ message: "Sorry, something went wrong." })
     })
+
+    it("should respond with 500 if url format is incorrect", async () => {
+      sandbox.stub(db, "query").rejects()
+
+      const res = await request(app).get("/companies/some-&company-id")
+
+      expect(res.status).to.equal(500)
+      expect(res.headers["status"]).to.equal("500 Internal Server Error")
+      expect(res.body).to.deep.equal({ message: "Sorry, something went wrong." })
+    })
   })
 })

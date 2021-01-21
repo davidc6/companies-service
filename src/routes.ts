@@ -30,6 +30,15 @@ const mountRoutes = (app: Application): void => {
   })
 
   app.get("/companies/:id", async (req: Request, res: Response) => {
+    const regex = /^[a-z-]+$/
+    const re = new RegExp(regex)
+
+    if (!re.test(req.params.id)) {
+      res.set({ Status: "500 Internal Server Error" })
+      res.status(500).json({ message: "Sorry, something went wrong." })
+      return
+    }
+
     try {
       const {
         rows,
