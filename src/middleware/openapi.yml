@@ -37,6 +37,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Company'
+        '400':
+          description: Unsuccessful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Unsuccessful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'             
 components:
   schemas:
     Root:
@@ -56,3 +68,13 @@ components:
           type: string
         careers:
           type: string
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        status:
+          type: integer
+        url:
+          type: string
+      

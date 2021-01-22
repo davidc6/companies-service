@@ -11,7 +11,9 @@
     "dev": "nodemon src/.bin/www",
     "eslint": "eslint src && eslint src/.bin",
     "start": "node dist/.bin/www.js",
-    "test": "mocha --ALLOW_CONFIG_MUTATIONS=true test/**/*.ts --exit"
+    "test:common": "mocha --ALLOW_CONFIG_MUTATIONS=true test/**/*.ts",
+    "test": "npm run test:common --exit",
+    "test:only": "node_modules/.bin/mocha -- --grep \"$npm_config_file\" --exit"
   },
   "repository": {
     "type": "git",
@@ -47,6 +49,7 @@
     "@types/helmet": "^4.0.0",
     "@types/mocha": "^8.2.0",
     "@types/pg": "^7.14.8",
+    "@types/sinon-chai": "^3.2.5",
     "@types/winston": "^2.4.4",
     "@typescript-eslint/eslint-plugin": "^4.13.0",
     "@typescript-eslint/parser": "^4.13.0",
@@ -59,6 +62,7 @@
     "nyc": "^15.1.0",
     "prettier": "2.2.1",
     "sinon": "^9.2.3",
+    "sinon-chai": "^3.5.0",
     "source-map-support": "^0.5.19",
     "supertest": "^6.0.1",
     "typescript": "^4.1.3"

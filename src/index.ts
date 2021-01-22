@@ -20,8 +20,11 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cors())
 app.use(loggerMiddleware)
 app.use(openApiValidator)
-app.use(errorHandler)
 
 mountRoutes(app)
+
+// error handling middleware should come
+// ref: https://expressjs.com/en/guide/error-handling.html
+app.use(errorHandler)
 
 export default app
