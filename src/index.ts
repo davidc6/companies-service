@@ -18,7 +18,10 @@ app.use(bodyParser.json())
 app.use(bodyParser.text())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cors())
-app.use(loggerMiddleware)
+// do not use logger when running tests
+if (!process.env.TESTS) {
+  app.use(loggerMiddleware)
+}
 app.use(openApiValidator)
 
 mountRoutes(app)

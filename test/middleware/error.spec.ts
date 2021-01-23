@@ -21,7 +21,7 @@ describe("error handler middleware", () => {
       const res = await request(app).get("/non-existent-route")
 
       const expected = {
-        detail: "Sorry, looks like the url you've tried is invalid",
+        detail: "Sorry, looks like the url you've tried is invalid.",
         title: "Not Found",
         status: 404,
         instance: "/non-existent-route",
@@ -130,7 +130,7 @@ describe("error handler middleware", () => {
         title: "Some title",
         status: 400,
         instance: "/some-instance",
-        detail: "Sorry, looks like the url you've tried is invalid",
+        detail: "Sorry, looks like the url you've tried is invalid.",
       }
 
       expect(jsonSpy).to.have.been.calledOnceWith(expected)
@@ -139,7 +139,7 @@ describe("error handler middleware", () => {
     it("should set status to 500 if status is not set on the error object", async () => {
       const errStub = {
         title: "Some title",
-        status: "",
+        status: null,
         instance: "/some-instance",
         detail: "",
       }
@@ -150,7 +150,7 @@ describe("error handler middleware", () => {
         title: "Some title",
         status: 500,
         instance: "/some-instance",
-        detail: "Sorry, looks like the url you've tried is invalid",
+        detail: "Sorry, looks like the url you've tried is invalid.",
       }
 
       expect(jsonSpy).to.have.been.calledOnceWith(expected)

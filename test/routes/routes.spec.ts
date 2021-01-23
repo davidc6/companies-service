@@ -21,95 +21,170 @@ describe("routes", () => {
     sandbox.restore()
   })
 
-  describe("GET /", () => {
-    it("should respond with 200, valid headers and body", async () => {
-      const expected = {
-        all_companies_url: "fake-domain/companies",
-        company_url: "fake-domain/companies/{company_id}",
-        current_url: "fake-domain",
-      }
+  describe("Integration tests", () => {
+    describe("GET /", () => {
+      let res = null
 
-      sandbox.stub(domain, "getEnvBasedDomain").returns("fake-domain")
+      beforeEach(async () => {
+        sandbox.stub(domain, "getEnvBasedDomain").returns("fake-domain")
+        res = await request(app).get("/")
+      })
 
-      const res = await request(app).get("/")
+      it("should respond with 200, valid headers and body", async () => {
+        expect(res.status).to.equal(200)
+      })
 
-      expect(res.status).to.equal(200)
-      expect(res.headers["status"]).to.equal("200 OK")
-      expect(res.headers["content-type"]).to.equal("application/json; charset=utf-8")
-      expect(res.body).to.deep.equal(expected)
-    })
-  })
+      it("should set application/json content-type header", async () => {
+        expect(res.headers["content-type"]).to.equal("application/json; charset=utf-8")
+      })
 
-  describe("GET /companies", () => {
-    it("should respond with 200, valid headers and body", async () => {
-      sandbox.stub(db, "query").resolves(resolvedData)
+      it("should set status header to '200 OK'", async () => {
+        expect(res.headers["status"]).to.equal("200 OK")
+      })
 
-      const res = await request(app).get("/companies")
+      it("should set valid body", async () => {
+        const expected = {
+          all_companies_url: "fake-domain/companies",
+          company_url: "fake-domain/companies/{company_id}",
+          current_url: "fake-domain",
+        }
 
-      expect(res.status).to.equal(200)
-      expect(res.headers["status"]).to.equal("200 OK")
-      expect(res.headers["content-type"]).to.equal("application/json; charset=utf-8")
-      expect(res.body).to.deep.equal(mockDbData)
-    })
-
-    it("should respond with 500 and valid response body", async () => {
-      sandbox.stub(db, "query").rejects()
-
-      const res = await request(app).get("/companies")
-
-      expect(res.status).to.equal(500)
-      expect(res.headers["status"]).to.equal("500 Internal Server Error")
-      expect(res.headers["content-type"]).to.equal("application/json; charset=utf-8")
-      expect(res.body).to.deep.equal({ message: "Sorry, something went wrong." })
-    })
-  })
-
-  describe("GET /companies/:id", () => {
-    it("should respond with 200, valid headers and body", async () => {
-      sandbox.stub(domain, "getEnvBasedDomain").returns("fake-domain")
-      sandbox.stub(db, "query").resolves(resolvedData)
-
-      const res = await request(app).get("/companies/some-company-id")
-
-      expect(res.status).to.equal(200)
-      expect(res.headers["status"]).to.equal("200 OK")
-      expect(res.headers["content-type"]).to.equal("application/json; charset=utf-8")
-      expect(res.body).to.deep.equal(mockDbData[0])
+        expect(res.body).to.deep.equal(expected)
+      })
     })
 
-    it("should respond with 500, valid headers and body", async () => {
-      sandbox.stub(db, "query").rejects()
+    describe("GET /companies", () => {
+      describe("when a database query succeeds", () => {
+        let res = null
 
-      const res = await request(app).get("/companies/some-company-id")
+        beforeEach(async () => {
+          sandbox.stub(db, "query").resolves(resolvedData)
+          res = await request(app).get("/companies")
+        })
 
-      const expected = {
-        detail: "Sorry, something went wrong",
-        instance: "/companies/some-company-id",
-        status: 500,
-        title: "Internal Server Error",
-      }
+        it("should respond with 200", async () => {
+          expect(res.status).to.equal(200)
+        })
 
-      expect(res.status).to.equal(500)
-      expect(res.headers["status"]).to.equal("500 Internal Server Error")
-      expect(res.headers["content-type"]).to.equal("application/json; charset=utf-8")
-      expect(res.body).to.deep.equal(expected)
+        it("should set content-type header to application/json", async () => {
+          expect(res.headers["content-type"]).to.equal("application/json; charset=utf-8")
+        })
+
+        it("should set status header to '200 OK'", async () => {
+          expect(res.headers["status"]).to.equal("200 OK")
+        })
+
+        it("should set valid body", async () => {
+          expect(res.body).to.deep.equal(mockDbData)
+        })
+      })
+
+      describe("when a database query fails", () => {
+        let res = null
+
+        beforeEach(async () => {
+          sandbox.stub(db, "query").rejects()
+          res = await request(app).get("/companies")
+        })
+
+        it("should respond with 500", async () => {
+          expect(res.status).to.equal(500)
+        })
+
+        it("should set application/json content-type header", async () => {
+          expect(res.headers["content-type"]).to.equal("application/json; charset=utf-8")
+        })
+
+        it("should set status header to '500 Internal Server Error'", async () => {
+          expect(res.headers["status"]).to.equal("500 Internal Server Error")
+        })
+
+        it("should set valid body", async () => {
+          const expected = {
+            title: "Internal Server Error",
+            status: 500,
+            instance: "/companies",
+            detail: "An error has occurred and we are working to fix the problem.",
+          }
+
+          expect(res.body).to.deep.equal(expected)
+        })
+      })
     })
 
-    it("should respond with 500 if url format is incorrect", async () => {
-      sandbox.stub(db, "query").rejects()
+    describe("GET /companies/:id", () => {
+      describe("when a database query succeeds", () => {
+        let res = null
 
-      const res = await request(app).get("/companies/some-&company-id")
+        beforeEach(async () => {
+          sandbox.stub(domain, "getEnvBasedDomain").returns("fake-domain")
+          sandbox.stub(db, "query").resolves(resolvedData)
+          res = await request(app).get("/companies/some-company-id")
+        })
 
-      const expected = {
-        title: "Bad Request",
-        status: 400,
-        instance: "/companies/some-&company-id",
-        detail: "Sorry, looks like the url you've tried is invalid",
-      }
+        it("should respond with 200", async () => {
+          expect(res.status).to.equal(200)
+        })
 
-      expect(res.status).to.equal(400)
-      expect(res.headers["status"]).to.equal("400 Bad Request")
-      expect(res.body).to.deep.equal(expected)
+        it("should set content-type header to application/json", async () => {
+          expect(res.headers["content-type"]).to.equal("application/json; charset=utf-8")
+        })
+
+        it("should set status header to '200 OK'", async () => {
+          expect(res.headers["status"]).to.equal("200 OK")
+        })
+
+        it("should set valid body", async () => {
+          expect(res.body).to.deep.equal(mockDbData[0])
+        })
+      })
+
+      describe("when a database query fails", () => {
+        let res = null
+
+        beforeEach(async () => {
+          sandbox.stub(db, "query").rejects()
+          res = await request(app).get("/companies/some-company-id")
+        })
+
+        it("should respond with 500", async () => {
+          expect(res.status).to.equal(500)
+        })
+
+        it("should set content-type header to application/json", async () => {
+          expect(res.headers["content-type"]).to.equal("application/json; charset=utf-8")
+        })
+
+        it("should set status header to '500 Internal Server Error'", async () => {
+          expect(res.headers["status"]).to.equal("500 Internal Server Error")
+        })
+
+        it("should set valid body", async () => {
+          const expected = {
+            detail: "Sorry, something went wrong",
+            instance: "/companies/some-company-id",
+            status: 500,
+            title: "Internal Server Error",
+          }
+
+          expect(res.body).to.deep.equal(expected)
+        })
+
+        it("should respond with 500 if url format is incorrect", async () => {
+          res = await request(app).get("/companies/some-&company-id")
+
+          const expected = {
+            title: "Bad Request",
+            status: 400,
+            instance: "/companies/some-&company-id",
+            detail: "Sorry, looks like the url you've tried is invalid.",
+          }
+
+          expect(res.status).to.equal(400)
+          expect(res.headers["status"]).to.equal("400 Bad Request")
+          expect(res.body).to.deep.equal(expected)
+        })
+      })
     })
   })
 })

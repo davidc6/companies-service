@@ -1,4 +1,4 @@
-import { Application, Response, Request, response } from "express"
+import { Application, Response, Request, NextFunction } from "express"
 import { getEnvBasedDomain } from "./utils/domain"
 import { query } from "./db"
 import { ResponseError } from "./middleware/error"
@@ -21,15 +21,15 @@ const mountRoutes = (app: Application): void => {
     }
   })
 
-  app.get("/companies", async (req: Request, res: Response) => {
+  app.get("/companies", async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { rows } = await query("SELECT company_id, name FROM companies")
-
       res.set({ Status: "200 OK" })
       res.status(200).json(rows)
     } catch (e) {
-      res.set({ Status: "500 Internal Server Error" })
-      res.status(500).json({ message: "Sorry, something went wrong." })
+      next(ResponseError("Internal Server Error", 500, req.originalUrl, responseText.error_db))
+      // res.set({ Status: "500 Internal Server Error" })
+      // res.status(500).json({ message: "Sorry, something went wrong." })
     }
   })
 
