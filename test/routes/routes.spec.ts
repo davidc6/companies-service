@@ -38,10 +38,6 @@ describe("routes", () => {
         expect(res.headers["content-type"]).to.equal("application/json; charset=utf-8")
       })
 
-      it("should set status header to '200 OK'", async () => {
-        expect(res.headers["status"]).to.equal("200 OK")
-      })
-
       it("should set valid body", async () => {
         const expected = {
           all_companies_url: "fake-domain/companies",
@@ -70,10 +66,6 @@ describe("routes", () => {
           expect(res.headers["content-type"]).to.equal("application/json; charset=utf-8")
         })
 
-        it("should set status header to '200 OK'", async () => {
-          expect(res.headers["status"]).to.equal("200 OK")
-        })
-
         it("should set valid body", async () => {
           expect(res.body).to.deep.equal(mockDbData)
         })
@@ -93,10 +85,6 @@ describe("routes", () => {
 
         it("should set application/json content-type header", async () => {
           expect(res.headers["content-type"]).to.equal("application/json; charset=utf-8")
-        })
-
-        it("should set status header to '500 Internal Server Error'", async () => {
-          expect(res.headers["status"]).to.equal("500 Internal Server Error")
         })
 
         it("should set valid body", async () => {
@@ -130,10 +118,6 @@ describe("routes", () => {
           expect(res.headers["content-type"]).to.equal("application/json; charset=utf-8")
         })
 
-        it("should set status header to '200 OK'", async () => {
-          expect(res.headers["status"]).to.equal("200 OK")
-        })
-
         it("should set valid body", async () => {
           expect(res.body).to.deep.equal(mockDbData[0])
         })
@@ -155,10 +139,6 @@ describe("routes", () => {
           expect(res.headers["content-type"]).to.equal("application/json; charset=utf-8")
         })
 
-        it("should set status header to '500 Internal Server Error'", async () => {
-          expect(res.headers["status"]).to.equal("500 Internal Server Error")
-        })
-
         it("should set valid body", async () => {
           const expected = {
             detail: "Sorry, something went wrong",
@@ -177,11 +157,10 @@ describe("routes", () => {
             title: "Bad Request",
             status: 400,
             instance: "/companies/some-&company-id",
-            detail: "Sorry, looks like the url you've tried is invalid.",
+            detail: "Sorry, looks like this url is invalid.",
           }
 
           expect(res.status).to.equal(400)
-          expect(res.headers["status"]).to.equal("400 Bad Request")
           expect(res.body).to.deep.equal(expected)
         })
       })

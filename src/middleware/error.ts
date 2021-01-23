@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express"
-import { responseText } from "../config/responses"
+import { responseDetail } from "../config/responses"
 
 type CustomError = {
   title: string
@@ -25,9 +25,8 @@ export const errorHandler = (
     title: err.title || "Not Found",
     status: err.status || 500,
     instance: err.instance || req.originalUrl,
-    detail: err.detail || responseText.unrecognised_url,
+    detail: err.detail || responseDetail.unrecognised_url,
   }
 
-  res.set({ Status: `${response.status} ${response.title}` })
   res.status(err.status).json(response)
 }
