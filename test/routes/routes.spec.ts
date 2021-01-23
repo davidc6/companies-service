@@ -89,7 +89,7 @@ describe("routes", () => {
 
         it("should set valid body", async () => {
           const expected = {
-            title: "Internal Server Error",
+            title: "Oops! Looks like something is missing.",
             status: 500,
             instance: "/companies",
             detail: "An error has occurred and we are working to fix the problem.",
@@ -141,7 +141,7 @@ describe("routes", () => {
 
         it("should set valid body", async () => {
           const expected = {
-            detail: "Sorry, something went wrong",
+            detail: "An error has occurred and we are working to fix the problem.",
             instance: "/companies/some-company-id",
             status: 500,
             title: "Internal Server Error",

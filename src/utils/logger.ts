@@ -1,23 +1,14 @@
 import winston from "winston"
 
 const logger = winston.createLogger({
-  level: "info",
-  format: winston.format.json(),
-  defaultMeta: { service: "companies-service" },
-  transports: [
-    new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.timestamp({
-          format: "YYYY-MM-DD HH:mm:ss.sssZ",
-        }),
-        winston.format.printf(
-          ({ level, message, timestamp }) => `[${level}] - ${timestamp} ${message}`
-        )
-      ),
+  format: winston.format.combine(
+    winston.format.colorize({ all: true }),
+    winston.format.timestamp({
+      format: "YYYY-MM-DD HH:mm:ss.sssZ",
     }),
-  ],
-  levels: winston.config.npm.levels,
+    winston.format.printf(({ level, message, timestamp }) => `[${level}] - ${timestamp} ${message}`)
+  ),
+  transports: [new winston.transports.Console()],
 })
 
 export { logger }

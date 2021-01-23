@@ -25,7 +25,7 @@ export const errorHandler = (
     title: err.title || "Not Found",
     status: err.status || 500,
     instance: err.instance || req.originalUrl,
-    detail: err.detail || responseDetail.unrecognised_url,
+    detail: err.detail || responseDetail.unrecognisedUrl,
   }
 
   res.status(err.status).json(response)
