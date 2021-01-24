@@ -9,7 +9,7 @@
     "clean:dist": "rm -rf dist",
     "coverage": "nyc npm run test",
     "dev": "nodemon src/.bin/www",
-    "eslint": "eslint src && eslint src/.bin",
+    "lint": "eslint src",
     "start": "node dist/.bin/www.js",
     "test:common": "TESTS=true mocha --ALLOW_CONFIG_MUTATIONS=true test/**/*.ts",
     "test": "npm run test:common --exit",
