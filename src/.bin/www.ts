@@ -47,7 +47,7 @@ const init = () => {
   }
 
   const server = http.createServer(app)
-  server.listen(config.get("port"))
+  server.listen(PORT)
   server.on("listening", onListening)
   server.on("error", onError)
 }
