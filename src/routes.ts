@@ -5,11 +5,11 @@ import { ResponseError } from "./middleware/error"
 import { responseDetail, responseTitle } from "./config/responses"
 
 const mountRoutes = (app: Application): void => {
-  app.get("/", async (req: Request, res: Response) => {
+  app.get("/", (req: Request, res: Response) => {
     const response = {
-      current_url: `${getEnvBasedDomain()}`,
-      all_companies_url: `${getEnvBasedDomain()}/companies`,
-      company_url: `${getEnvBasedDomain()}/companies/{company_id}`,
+      current_url: getEnvBasedDomain(req),
+      all_companies_url: `${getEnvBasedDomain(req)}/companies`,
+      company_url: `${getEnvBasedDomain(req)}/companies/{company_id}`,
     }
 
     res.status(200).json(response)

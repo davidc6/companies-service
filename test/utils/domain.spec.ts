@@ -15,6 +15,11 @@ describe("domain utility", () => {
     s.withArgs("domain").returns("fake-domain")
     s.withArgs("port").returns("0000")
 
-    expect(domain.getEnvBasedDomain()).to.equal("fake-domain:0000")
+    expect(
+      domain.getEnvBasedDomain({
+        protocol: "http",
+        get: () => "fake-domain:8080",
+      })
+    ).to.equal("http://fake-domain:8080")
   })
 })

@@ -1,5 +1,5 @@
-import config from "config"
+import { Request } from "express"
 
-const getEnvBasedDomain = (): string => `${config.get("domain")}:${config.get("port")}`
+const getEnvBasedDomain = (req: Request): string => `${req.protocol}://${req.get("Host")}`
 
 export { getEnvBasedDomain }
