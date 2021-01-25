@@ -4,9 +4,10 @@
   "description": "A service that provides information about various companies",
   "main": "index.js",
   "scripts": {
-    "build": "npm run clean:dist && tsc",
+    "build": "npm run clean:dist && tsc && npm run copy:openapidoc",
     "check:prettier": "prettier --check 'src/routes.ts'",
     "clean:dist": "rm -rf dist",
+    "copy:openapidoc": "cp src/middleware/openapi.yml dist/middleware/",
     "coverage": "nyc npm run test",
     "dev": "nodemon src/.bin/www",
     "lint": "eslint src",
