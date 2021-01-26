@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express"
 import { responseDetail } from "../config/responses"
+import { logger } from "../utils/logger"
 
 type CustomError = {
   title: string
@@ -27,6 +28,11 @@ export const errorHandler = (
     instance: err.instance || req.originalUrl,
     detail: err.detail || responseDetail.unrecognisedUrl,
   }
+
+  const logMessage = `${req.method} - ${req.statusCode || 500} - ${req.ip} - ${req.url} - ${
+    req.headers["user-agent"]
+  }`
+  logger.error(logMessage)
 
   res.status(err.status).json(response)
 }
