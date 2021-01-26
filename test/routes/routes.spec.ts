@@ -121,6 +121,11 @@ describe("routes", () => {
         it("should set valid body", async () => {
           expect(res.body).to.deep.equal(mockDbData[0])
         })
+
+        it("should respond with 200 if the company_id is alphanumeric", async () => {
+          res = await request(app).get("/companies/some-company-1")
+          expect(res.status).to.equal(200)
+        })
       })
 
       describe("when a database query fails", () => {

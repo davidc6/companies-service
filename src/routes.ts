@@ -3,6 +3,7 @@ import { getEnvBasedDomain } from "./utils/domain"
 import { query } from "./db"
 import { ResponseError } from "./middleware/error"
 import { responseDetail, responseTitle } from "./config/responses"
+import { isAlphaNumeric } from "./utils/regex"
 
 const mountRoutes = (app: Application): void => {
   app.get("/", (req: Request, res: Response) => {
@@ -25,10 +26,7 @@ const mountRoutes = (app: Application): void => {
   })
 
   app.get("/companies/:id", async (req: Request, res: Response, next) => {
-    const regex = /^[a-z-]+$/
-    const re = new RegExp(regex)
-
-    if (!re.test(req.params.id)) {
+    if (!isAlphaNumeric(req.params.id)) {
       return next(
         ResponseError("Bad Request", 400, req.originalUrl, responseDetail.unrecognisedUrl)
       )
