@@ -29,10 +29,5 @@ export const errorHandler = (
     detail: err.detail || responseDetail.unrecognisedUrl,
   }
 
-  const logMessage = `${req.method} - ${req.statusCode || 500} - ${req.ip} - ${req.url} - ${
-    req.headers["user-agent"]
-  }`
-  logger.error(logMessage)
-
   res.status(err.status).json(response)
 }
