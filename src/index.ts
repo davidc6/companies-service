@@ -4,7 +4,7 @@ import bodyParser from "body-parser"
 import cors from "cors"
 import helmet from "helmet"
 import { openApiValidator } from "./middleware/openapi"
-import { errorHandler } from "./middleware/error"
+import { errorHandler } from "./middleware/errorHandler"
 import { loggerMiddleware } from "./middleware/logger"
 import { mountRoutes } from "./routes"
 
@@ -26,7 +26,7 @@ app.use(openApiValidator)
 
 mountRoutes(app)
 
-// error handling middleware should come
+// error handling middleware should come last
 // ref: https://expressjs.com/en/guide/error-handling.html
 app.use(errorHandler)
 

@@ -1,23 +1,10 @@
-import { NextFunction, Request, Response } from "express"
+import e, { NextFunction, Request, Response } from "express"
 import { responseDetail } from "../config/responses"
 import { logger } from "../utils/logger"
-
-type CustomError = {
-  title: string
-  status: number
-  detail: string
-  instance: string
-}
-
-export const ResponseError = (title: string, status = 500, url = "", detail = ""): CustomError => ({
-  title,
-  status,
-  detail,
-  instance: url,
-})
+import { ResponseErrorType } from "../utils/error"
 
 export const errorHandler = (
-  err: CustomError,
+  err: ResponseErrorType,
   req: Request,
   res: Response,
   next: NextFunction
@@ -27,6 +14,13 @@ export const errorHandler = (
     status: err.status || 500,
     instance: err.instance || req.originalUrl,
     detail: err.detail || responseDetail.unrecognisedUrl,
+  }
+
+  // suppress logging when running tests
+  if (!process.env.TESTS) {
+    const stack = err?.e?.stack ? err.e.stack : err.stack
+    const logMessage = `${response.status} - [${req.method}] - ${req.url} - ${stack}`
+    logger.log({ level: "error", message: logMessage })
   }
 
   res.status(err.status).json(response)

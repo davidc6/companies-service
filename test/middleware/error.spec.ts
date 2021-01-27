@@ -4,7 +4,8 @@ import sinon from "sinon"
 import sinonChai from "sinon-chai"
 chai.use(sinonChai)
 import app from "../../src/index"
-import { errorHandler } from "../../src/middleware/error"
+import { errorHandler } from "../../src/middleware/errorHandler"
+import { ResponseError } from "../../src/utils/error"
 import { Request, Response } from "express"
 
 const sandbox = sinon.createSandbox()
@@ -45,6 +46,7 @@ describe("error handler middleware", () => {
     let statusSpy = null
     let jsonSpy = null
     let nextSpy = null
+    const e = new Error("error")
 
     beforeEach(() => {
       setSpy = sandbox.spy()
@@ -77,12 +79,7 @@ describe("error handler middleware", () => {
     })
 
     it("should set alternative title if title is not set on the err object", async () => {
-      const errStub = {
-        title: "",
-        status: 400,
-        instance: "/some-url",
-        detail: "This error happened just because",
-      }
+      const errStub = ResponseError("", 400, "/some-url", "This error happened just because", e)
 
       errorHandler(errStub, reqStub, resInstance as Response, nextSpy)
 
@@ -97,12 +94,7 @@ describe("error handler middleware", () => {
     })
 
     it("should set instance (requests original url) if instance is not set on the err object", async () => {
-      const errStub = {
-        title: "Some title",
-        status: 400,
-        instance: "",
-        detail: "This error happened just because",
-      }
+      const errStub = ResponseError("Some title", 400, "", "This error happened just because", e)
 
       errorHandler(errStub, reqStub, resInstance as Response, nextSpy)
 
@@ -117,12 +109,7 @@ describe("error handler middleware", () => {
     })
 
     it("should set generic detail if detail is not set on the err object", async () => {
-      const errStub = {
-        title: "Some title",
-        status: 400,
-        instance: "/some-instance",
-        detail: "",
-      }
+      const errStub = ResponseError("Some title", 400, "/some-instance", "", e)
 
       errorHandler(errStub, reqStub, resInstance as Response, nextSpy)
 
@@ -137,12 +124,7 @@ describe("error handler middleware", () => {
     })
 
     it("should set status to 500 if status is not set on the error object", async () => {
-      const errStub = {
-        title: "Some title",
-        status: null,
-        instance: "/some-instance",
-        detail: "",
-      }
+      const errStub = ResponseError("Some title", null, "/some-instance", "", e)
 
       errorHandler(errStub, reqStub, resInstance as Response, nextSpy)
 
