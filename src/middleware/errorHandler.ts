@@ -1,25 +1,23 @@
-import e, { NextFunction, Request, Response } from "express"
-import { responseDetail } from "../config/responses"
+import { NextFunction, Request, Response } from "express"
 import { logger } from "../utils/logger"
-import { ResponseErrorType } from "../utils/error"
+import { CustomError } from "../utils/customError"
 
 export const errorHandler = (
-  err: ResponseErrorType,
+  err: CustomError,
   req: Request,
   res: Response,
   next: NextFunction
 ): void => {
   const response = {
-    title: err.title || "Not Found",
-    status: err.status || 500,
-    instance: err.instance || req.originalUrl,
-    detail: err.detail || responseDetail.unrecognisedUrl,
+    title: err.title || err.message,
+    status: err.status,
+    instance: req.originalUrl,
+    detail: err.detail || err.message,
   }
 
   // suppress logging when running tests
-  if (!process.env.TESTS) {
-    const stack = err?.e?.stack ? err.e.stack : err.stack
-    const logMessage = `${response.status} - [${req.method}] - ${req.url} - ${stack}`
+  if (process.env.SUPPRESS_LOGS === "false") {
+    const logMessage = `[${req.method}] - ${req.url} - ${response.status} - ${err.stack}`
     logger.log({ level: "error", message: logMessage })
   }
 

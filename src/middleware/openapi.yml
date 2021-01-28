@@ -27,6 +27,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Companies'
+        '400':
+          $ref: '#/components/responses/BadRequest'
   /companies/{companyId}:
     get:
       summary: Gets data about a single company
@@ -38,18 +40,23 @@ paths:
               schema:
                 $ref: '#/components/schemas/Company'
         '400':
-          description: Unsuccessful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+          $ref: '#/components/responses/BadRequest'
         '404':
-          description: Unsuccessful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'  
+          $ref: '#/components/responses/NotFound'
 components:
+  responses:
+    BadRequest:
+      description: Unsuccessful operation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Unsuccessful operation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'  
   schemas:
     Root:
       type: object
@@ -71,10 +78,15 @@ components:
     Error:
       type: object
       properties:
-        message:
+        title:
+          description: A short, human-readable title for the general error type; the title should not change for given types
           type: string
         status:
+          description: HTTP status code
           type: integer
-        url:
+        instance:
+          description: A URI reference that identifies the specific occurrence of the problem
           type: string
-      
+        detail:
+          description: A human-readable description of the specific error
+          type: string

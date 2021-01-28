@@ -1,14 +1,13 @@
 import express from "express"
-import dotenv from "dotenv"
+import "dotenv/config"
 import bodyParser from "body-parser"
 import cors from "cors"
 import helmet from "helmet"
 import { openApiValidator } from "./middleware/openapi"
 import { errorHandler } from "./middleware/errorHandler"
 import { loggerMiddleware } from "./middleware/logger"
+import { apiKeyValidator } from "./middleware/apiKeyValidator"
 import { mountRoutes } from "./routes"
-
-dotenv.config()
 
 const app = express()
 app.disable("x-powered-by")
@@ -18,10 +17,18 @@ app.use(bodyParser.json())
 app.use(bodyParser.text())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cors())
+
 // do not use logger when running tests
-if (!process.env.TESTS) {
+if (process.env.SUPPRESS_LOGS === "false") {
   app.use(loggerMiddleware)
 }
+
+if (process.env.API_KEY_VALIDATION === "true") {
+  // validate api key first
+  app.use(apiKeyValidator)
+}
+
+// validate schema next
 app.use(openApiValidator)
 
 mountRoutes(app)

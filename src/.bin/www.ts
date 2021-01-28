@@ -1,6 +1,7 @@
 import http from "http"
 import app from "../index"
-import config from "config"
+
+const LOCAL_PORT = 8080
 
 const init = () => {
   const normalizePort = (port) => {
@@ -17,7 +18,7 @@ const init = () => {
     return false
   }
 
-  const PORT = normalizePort(process.env.PORT || config.get("port"))
+  const PORT = normalizePort(process.env.PORT || LOCAL_PORT)
 
   const onError = (e) => {
     if (e.syscall !== "listen") {

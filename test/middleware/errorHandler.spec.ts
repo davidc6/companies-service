@@ -5,7 +5,7 @@ import sinonChai from "sinon-chai"
 chai.use(sinonChai)
 import app from "../../src/index"
 import { errorHandler } from "../../src/middleware/errorHandler"
-import { ResponseError } from "../../src/utils/error"
+import { CustomError } from "../../src/utils/customError"
 import { Request, Response } from "express"
 
 const sandbox = sinon.createSandbox()
@@ -15,15 +15,15 @@ describe("error handler middleware", () => {
     it("should return 404 for an invalid route", async () => {
       const res = await request(app).get("/non-existent-route")
 
-      expect(res.statusCode).to.equal(404)
+      expect(res.status).to.equal(404)
     })
 
     it("should return valid body for an invalid route", async () => {
       const res = await request(app).get("/non-existent-route")
 
       const expected = {
-        detail: "Sorry, looks like this url is invalid.",
-        title: "Not Found",
+        detail: "not found",
+        title: "not found",
         status: 404,
         instance: "/non-existent-route",
       }
@@ -46,7 +46,6 @@ describe("error handler middleware", () => {
     let statusSpy = null
     let jsonSpy = null
     let nextSpy = null
-    const e = new Error("error")
 
     beforeEach(() => {
       setSpy = sandbox.spy()
@@ -78,61 +77,34 @@ describe("error handler middleware", () => {
       sandbox.reset()
     })
 
-    it("should set alternative title if title is not set on the err object", async () => {
-      const errStub = ResponseError("", 400, "/some-url", "This error happened just because", e)
+    it("should set title and detail from Error message, set status to 500 if these are not set on CustomError", async () => {
+      const errStub = new CustomError(new Error("Error title"))
 
       errorHandler(errStub, reqStub, resInstance as Response, nextSpy)
 
       const expected = {
-        title: "Not Found",
-        status: 400,
-        instance: "/some-url",
-        detail: "This error happened just because",
-      }
-
-      expect(jsonSpy).to.have.been.calledOnceWith(expected)
-    })
-
-    it("should set instance (requests original url) if instance is not set on the err object", async () => {
-      const errStub = ResponseError("Some title", 400, "", "This error happened just because", e)
-
-      errorHandler(errStub, reqStub, resInstance as Response, nextSpy)
-
-      const expected = {
-        title: "Some title",
-        status: 400,
-        instance: "/some-url",
-        detail: "This error happened just because",
-      }
-
-      expect(jsonSpy).to.have.been.calledOnceWith(expected)
-    })
-
-    it("should set generic detail if detail is not set on the err object", async () => {
-      const errStub = ResponseError("Some title", 400, "/some-instance", "", e)
-
-      errorHandler(errStub, reqStub, resInstance as Response, nextSpy)
-
-      const expected = {
-        title: "Some title",
-        status: 400,
-        instance: "/some-instance",
-        detail: "Sorry, looks like this url is invalid.",
-      }
-
-      expect(jsonSpy).to.have.been.calledOnceWith(expected)
-    })
-
-    it("should set status to 500 if status is not set on the error object", async () => {
-      const errStub = ResponseError("Some title", null, "/some-instance", "", e)
-
-      errorHandler(errStub, reqStub, resInstance as Response, nextSpy)
-
-      const expected = {
-        title: "Some title",
+        title: "Error title",
         status: 500,
-        instance: "/some-instance",
-        detail: "Sorry, looks like this url is invalid.",
+        instance: "/some-url",
+        detail: "Error title",
+      }
+
+      expect(jsonSpy).to.have.been.calledOnceWith(expected)
+    })
+
+    it("should create response based on data from CustomError", async () => {
+      const errStub = new CustomError(new Error("Error title"))
+      errStub.status = 400
+      errStub.title = "Some title"
+      errStub.detail = "Some detail"
+
+      errorHandler(errStub, reqStub, resInstance as Response, nextSpy)
+
+      const expected = {
+        title: "Some title",
+        status: 400,
+        instance: "/some-url",
+        detail: "Some detail",
       }
 
       expect(jsonSpy).to.have.been.calledOnceWith(expected)

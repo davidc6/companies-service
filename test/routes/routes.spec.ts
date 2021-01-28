@@ -89,7 +89,7 @@ describe("routes", () => {
 
         it("should set valid body", async () => {
           const expected = {
-            title: "Oops! Looks like something is missing.",
+            title: "Oops, looks like something is missing.",
             status: 500,
             instance: "/companies",
             detail: "An error has occurred and we are working to fix the problem.",
@@ -149,20 +149,21 @@ describe("routes", () => {
             detail: "An error has occurred and we are working to fix the problem.",
             instance: "/companies/some-company-id",
             status: 500,
-            title: "Internal Server Error",
+            title: "Oops, looks like something is missing.",
           }
 
           expect(res.body).to.deep.equal(expected)
         })
 
-        it("should respond with 500 if url format is incorrect", async () => {
+        it("should respond with 400 if url format is incorrect", async () => {
           res = await request(app).get("/companies/some-&company-id")
 
           const expected = {
-            title: "Bad Request",
+            title: "Sorry, looks like this url is invalid.",
             status: 400,
             instance: "/companies/some-&company-id",
-            detail: "Sorry, looks like this url is invalid.",
+            detail:
+              "The url that you are trying to access is invalid, please check the url and try again.",
           }
 
           expect(res.status).to.equal(400)

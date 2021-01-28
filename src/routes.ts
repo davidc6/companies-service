@@ -1,11 +1,19 @@
 import { Application, Response, Request, NextFunction } from "express"
-import { getEnvBasedDomain } from "./utils/domain"
 import { query } from "./db"
-import { ResponseError } from "./utils/error"
-import { responseDetail, responseTitle } from "./config/responses"
+import { CustomError } from "./utils/customError"
 import { isAlphaNumeric } from "./utils/regex"
+import { getEnvBasedDomain } from "./utils/domain"
+import * as errorResponsesConfig from "./config/errorResponsesConfig.json"
 
 const mountRoutes = (app: Application): void => {
+  const buildError = (e, config, status = 500) => {
+    const error = new CustomError(e)
+    error.title = config?.title
+    error.detail = config?.detail
+    error.status = status
+    return error
+  }
+
   app.get("/", (req: Request, res: Response) => {
     const response = {
       current_url: getEnvBasedDomain(req),
@@ -21,16 +29,14 @@ const mountRoutes = (app: Application): void => {
       const { rows } = await query("SELECT company_id, name FROM companies LIMIT 10")
       res.status(200).json(rows)
     } catch (e) {
-      next(ResponseError(responseTitle.errorDB, 500, req.originalUrl, responseDetail.errorDB, e))
+      next(buildError(e, errorResponsesConfig.noCompanies))
     }
   })
 
   app.get("/companies/:id", async (req: Request, res: Response, next) => {
     if (!isAlphaNumeric(req.params.id)) {
       const e = new Error("Company :id is invalid")
-      return next(
-        ResponseError("Bad Request", 400, req.originalUrl, responseDetail.unrecognisedUrl, e)
-      )
+      return next(buildError(e, errorResponsesConfig.invalidCompanyId, 400))
     }
 
     try {
@@ -44,10 +50,10 @@ const mountRoutes = (app: Application): void => {
         res.status(200).json(rows[0])
       } else {
         const e = new Error(`Company with an id of ${req.params.id} does not exist.`)
-        next(ResponseError("Not Found", 404, req.originalUrl, responseDetail.notFoundInDB, e))
+        next(buildError(e, errorResponsesConfig.companyNotFound, 404))
       }
     } catch (e) {
-      next(ResponseError("Internal Server Error", 500, req.originalUrl, responseDetail.errorDB, e))
+      next(buildError(e, errorResponsesConfig.noCompanies))
     }
   })
 }

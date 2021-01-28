@@ -1,0 +1,14 @@
+{
+  "noCompanies": {
+    "title": "Oops, looks like something is missing.",
+    "detail": "An error has occurred and we are working to fix the problem."
+  },
+  "invalidCompanyId": {
+    "title": "Sorry, looks like this url is invalid.",
+    "detail": "The url that you are trying to access is invalid, please check the url and try again."
+  },
+  "companyNotFound": {
+    "title": "Company not found.",
+    "detail": "The company that you are looking for either does not exist or is unavailable."
+  } 
+}
