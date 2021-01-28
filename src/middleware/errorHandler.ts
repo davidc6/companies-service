@@ -10,7 +10,7 @@ export const errorHandler = (
 ): void => {
   const response = {
     title: err.title || err.message,
-    status: err.status,
+    status: err.status || 500,
     instance: req.originalUrl,
     detail: err.detail || err.message,
   }
@@ -21,5 +21,5 @@ export const errorHandler = (
     logger.log({ level: "error", message: logMessage })
   }
 
-  res.status(err.status).json(response)
+  res.status(response.status).json(response)
 }
