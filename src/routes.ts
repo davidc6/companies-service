@@ -42,9 +42,10 @@ const mountRoutes = (app: Application): void => {
     try {
       const {
         rows,
-      } = await query("SELECT company_id, name FROM companies WHERE company_id = $1 LIMIT 1", [
-        req.params.id,
-      ])
+      } = await query(
+        "SELECT company_id, name, summary, careers, industry, year_founded, github, blog FROM companies WHERE company_id = $1 LIMIT 1",
+        [req.params.id]
+      )
 
       if (rows.length) {
         res.status(200).json(rows[0])

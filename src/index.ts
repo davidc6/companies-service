@@ -23,7 +23,7 @@ if (process.env.SUPPRESS_LOGS === "false") {
   app.use(loggerMiddleware)
 }
 
-if (process.env.API_KEY_VALIDATION === "true") {
+if (process.env.API_KEYS) {
   // validate api key first
   app.use(apiKeyValidator)
 }

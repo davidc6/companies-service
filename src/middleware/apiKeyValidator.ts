@@ -7,7 +7,8 @@ export const apiKeyValidator = (req: Request, res: Response, next: NextFunction)
     return next()
   }
 
-  const apiKeysSet = new Set(process.env.API_KEYS.split(","))
+  const apiKeys = process.env.API_KEYS || ""
+  const apiKeysSet = new Set(apiKeys.split(","))
   const requestApiKey = req.header("x-api-key")
 
   if (!apiKeysSet.has(requestApiKey)) {
