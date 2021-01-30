@@ -22,8 +22,9 @@ describe("error handler middleware", () => {
       const res = await request(app).get("/non-existent-route")
 
       const expected = {
-        detail: "not found",
-        title: "not found",
+        detail:
+          "The url that you are trying to access is invalid, please check the url and try again.",
+        title: "Url not found",
         status: 404,
         instance: "/non-existent-route",
       }

@@ -19,7 +19,7 @@ paths:
                 $ref: '#/components/schemas/Root'
   /companies:
     get:
-      summary: Gets a list of companies
+      summary: Returns a list of all companies (subject to LIMIT value)
       responses:
         '200':
           description: Successful operation
@@ -29,12 +29,30 @@ paths:
                 $ref: '#/components/schemas/Companies'
         '400':
           $ref: '#/components/responses/BadRequest'
+    post:
+      summary: Creates a new company
+      requestBody:
+        description: Company to add
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewCompany'
+      responses:
+        '201':
+          description: Successful created new company
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Company'
+        '400':
+          $ref: '#/components/responses/BadRequest'
   /companies/{companyId}:
     get:
-      summary: Gets data about a single company
+      summary: Gets data about a company
       responses:
         '200':
-          description: Successful operation
+          description: Gets data about a {companyId} company
           content:
             application/json:
               schema:
@@ -64,16 +82,53 @@ components:
       type: array
       items:
         type: object
-    Company:
+    NewCompany:
       type: object
+      description: New company object
       properties:
-        id:
+        company_id:
           type: string
-        name: 
+        name:
           type: string
         summary:
           type: string
         careers:
+          type: string
+        industry:
+          type: string
+        founded:
+          type: integer
+        github:
+          type: string
+        blog:
+          type: string
+      required:
+        - company_id
+        - name
+        - summary
+        - careers
+        - industry
+        - founded
+        - github
+        - blog
+    Company:
+      type: object
+      properties:
+        company_id:
+          type: string
+        name:
+          type: string
+        summary:
+          type: string
+        careers:
+          type: string
+        industry:
+          type: string
+        founded:
+          type: integer
+        github:
+          type: string
+        blog:
           type: string
     Error:
       type: object

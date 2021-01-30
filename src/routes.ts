@@ -1,19 +1,12 @@
 import { Application, Response, Request, NextFunction } from "express"
 import { query } from "./db"
-import { CustomError } from "./utils/customError"
+import { buildError } from "./utils/customError"
 import { isAlphaNumeric } from "./utils/regex"
 import { getEnvBasedDomain } from "./utils/domain"
 import * as errorResponsesConfig from "./config/errorResponsesConfig.json"
+import { checkSchema, validationResult } from "express-validator"
 
 const mountRoutes = (app: Application): void => {
-  const buildError = (e, config, status = 500) => {
-    const error = new CustomError(e)
-    error.title = config?.title
-    error.detail = config?.detail
-    error.status = status
-    return error
-  }
-
   app.get("/", (req: Request, res: Response) => {
     const response = {
       current_url: getEnvBasedDomain(req),
@@ -26,10 +19,12 @@ const mountRoutes = (app: Application): void => {
 
   app.get("/companies", async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { rows } = await query("SELECT company_id, name FROM companies LIMIT 10")
+      const { rows } = await query(
+        "SELECT company_id, name, summary, careers, industry, founded, github, blog FROM companies LIMIT 10"
+      )
       res.status(200).json(rows)
-    } catch (e) {
-      next(buildError(e, errorResponsesConfig.noCompanies))
+    } catch (err) {
+      next(buildError(err, errorResponsesConfig.noCompanies))
     }
   })
 
@@ -43,20 +38,64 @@ const mountRoutes = (app: Application): void => {
       const {
         rows,
       } = await query(
-        "SELECT company_id, name, summary, careers, industry, year_founded, github, blog FROM companies WHERE company_id = $1 LIMIT 1",
+        "SELECT company_id, name, summary, careers, industry, founded, github, blog FROM companies WHERE company_id = $1 LIMIT 1",
         [req.params.id]
       )
 
       if (rows.length) {
         res.status(200).json(rows[0])
       } else {
-        const e = new Error(`Company with an id of ${req.params.id} does not exist.`)
-        next(buildError(e, errorResponsesConfig.companyNotFound, 404))
+        const err = new Error(`Company with an id of ${req.params.id} does not exist.`)
+        next(buildError(err, errorResponsesConfig.companyNotFound, 404))
       }
-    } catch (e) {
-      next(buildError(e, errorResponsesConfig.noCompanies))
+    } catch (err) {
+      next(buildError(err, errorResponsesConfig.noCompanies))
     }
   })
+
+  app.post(
+    "/companies",
+    checkSchema({
+      name: {
+        matches: {
+          bail: true,
+          options: [/^[a-zA-Z0-9 ]*$/, "g"],
+          errorMessage: "format is incorrect",
+        },
+      },
+      industry: {
+        isAlpha: {
+          bail: true,
+          errorMessage: "should only contain letters",
+        },
+      },
+    }),
+    async (req: Request, res: Response, next: NextFunction) => {
+      const queryOne =
+        "INSERT INTO companies (company_id, name, summary, careers, industry, founded, github, blog)"
+      const queryTwo = "VALUES ($1, $2, $3, $4, $5, $6, $7, $8)"
+      const queryThree =
+        "RETURNING company_id, name, summary, careers, industry, founded, github, blog"
+      // const queryFour = "WHERE company_id = $1"
+      const q = `${queryOne} ${queryTwo} ${queryThree}`
+
+      try {
+        validationResult(req).throw()
+
+        const { company_id, name, summary, careers, industry, founded, github, blog } = req.body
+        const values = [company_id, name, summary, careers, industry, founded, github, blog]
+
+        const data = await query(q, values)
+
+        res
+          .location(`${getEnvBasedDomain(req)}/companies/${data.rows[0].company_id}`)
+          .status(201)
+          .json({ ...data.rows[0] })
+      } catch (err) {
+        next(err)
+      }
+    }
+  )
 }
 
 export { mountRoutes }
