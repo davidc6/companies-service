@@ -18,7 +18,8 @@ Current demo url - https://companies-service.herokuapp.com/
 
 * `API_KEYS` - api keys that allow access to restricted resources. Multiple keys should be separated by the comma (<api_key_one>,<api_key_two>). Not setting or leaving this variable will disable authentication.
 * `PORT` - for setting the listening port.
-* `DATABASE_URL` - a string that contains database information. 
+* `DATABASE_URL` - a string that contains database information.
+* `SUPPRESS_LOGS` - can be `true` or `false` and allows to suppress logging; this is helpful when developing locally
 
 ## Authentication
 
