@@ -61,6 +61,12 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '404':
           $ref: '#/components/responses/NotFound'
+    delete:
+      summary: Deletes a single company
+      responses:
+        '204':
+          description: Deletes a company
+          $ref: '#/components/responses/NoContent'
 components:
   responses:
     BadRequest:
@@ -74,7 +80,10 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'  
+            $ref: '#/components/schemas/Error'
+    NoContent:
+      description: |
+        The server has successfully fulfilled the request and that there is no additional content to send in the response payload body.
   schemas:
     Root:
       type: object

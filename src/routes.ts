@@ -28,7 +28,7 @@ const mountRoutes = (app: Application): void => {
     }
   })
 
-  app.get("/companies/:id", async (req: Request, res: Response, next) => {
+  app.get("/companies/:id", async (req: Request, res: Response, next: NextFunction) => {
     if (!isAlphaNumeric(req.params.id)) {
       const e = new Error("Company :id is invalid")
       return next(buildError(e, errorResponsesConfig.invalidCompanyId, 400))
@@ -50,6 +50,21 @@ const mountRoutes = (app: Application): void => {
       }
     } catch (err) {
       next(buildError(err, errorResponsesConfig.noCompanies))
+    }
+  })
+
+  app.delete("/companies/:id", async (req: Request, res: Response, next: NextFunction) => {
+    if (!isAlphaNumeric(req.params.id)) {
+      const e = new Error("Company :id is invalid")
+      return next(buildError(e, errorResponsesConfig.invalidCompanyId, 400))
+    }
+
+    try {
+      await query("DELETE FROM companies WHERE company_id = $1", [req.params.id])
+
+      res.status(204).end()
+    } catch (err) {
+      next(buildError(err, errorResponsesConfig.general, 500))
     }
   })
 

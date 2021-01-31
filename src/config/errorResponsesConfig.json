@@ -10,5 +10,9 @@
   "companyNotFound": {
     "title": "Company not found.",
     "detail": "The company that you are looking for either does not exist or is unavailable."
+  },
+  "general": {
+    "title": "Sorry, something went wrong.",
+    "detail": "An error has occurred and we are working to fix the problem."
   }
 }
