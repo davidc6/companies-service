@@ -6,7 +6,6 @@ import helmet from "helmet"
 import { openApiValidator } from "./middleware/openapi"
 import { errorHandler } from "./middleware/errorHandler"
 import { loggerMiddleware } from "./middleware/logger"
-import { apiKeyValidator } from "./middleware/apiKeyValidator"
 import { mountRoutes } from "./routes"
 
 const app = express()
@@ -21,11 +20,6 @@ app.use(cors())
 // do not use logger when running tests
 if (process.env.SUPPRESS_LOGS === "false") {
   app.use(loggerMiddleware)
-}
-
-if (process.env.API_KEYS) {
-  // validate api key first
-  app.use(apiKeyValidator)
 }
 
 // validate schema next

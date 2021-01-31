@@ -59,14 +59,24 @@ paths:
                 $ref: '#/components/schemas/Company'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
     delete:
       summary: Deletes a single company
       responses:
         '204':
-          description: Deletes a company
+          description: No Content
           $ref: '#/components/responses/NoContent'
+    patch:
+      summary: Updates a company
+      responses:
+        '204':
+          description: No Content
+          $ref: '#/components/responses/NoContent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 components:
   responses:
     BadRequest:
@@ -84,6 +94,13 @@ components:
     NoContent:
       description: |
         The server has successfully fulfilled the request and that there is no additional content to send in the response payload body.
+    Unauthorized:
+      description: |
+        The request requires user authentication.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
     Root:
       type: object

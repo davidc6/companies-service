@@ -1,10 +1,11 @@
 import { Application, Response, Request, NextFunction } from "express"
+import { checkSchema, validationResult } from "express-validator"
 import { query } from "./db"
 import { buildError } from "./utils/customError"
 import { isAlphaNumeric } from "./utils/regex"
 import { getEnvBasedDomain } from "./utils/domain"
 import * as errorResponsesConfig from "./config/errorResponsesConfig.json"
-import { checkSchema, validationResult } from "express-validator"
+import { apiKeyValidator } from "./middleware/apiKeyValidator"
 
 const mountRoutes = (app: Application): void => {
   app.get("/", (req: Request, res: Response) => {
@@ -53,23 +54,50 @@ const mountRoutes = (app: Application): void => {
     }
   })
 
-  app.delete("/companies/:id", async (req: Request, res: Response, next: NextFunction) => {
-    if (!isAlphaNumeric(req.params.id)) {
-      const e = new Error("Company :id is invalid")
-      return next(buildError(e, errorResponsesConfig.invalidCompanyId, 400))
-    }
+  app.patch(
+    "/companies/:id",
+    apiKeyValidator,
+    async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const fields = Object.keys(req.body) // logic to extract fields and data
+        const values: string[] = Object.values(req.body)
+        values.push(req.params.id)
+        const set = fields.map((field, index) => {
+          return `${field} = $${index + 1}`
+        })
 
-    try {
-      await query("DELETE FROM companies WHERE company_id = $1", [req.params.id])
+        const q = `UPDATE companies SET ${set} WHERE company_id = $${values.length}`
+        await query(q, values)
 
-      res.status(204).end()
-    } catch (err) {
-      next(buildError(err, errorResponsesConfig.general, 500))
+        res.status(204).end()
+      } catch (err) {
+        next(buildError(err, errorResponsesConfig.general, 500))
+      }
     }
-  })
+  )
+
+  app.delete(
+    "/companies/:id",
+    apiKeyValidator,
+    async (req: Request, res: Response, next: NextFunction) => {
+      if (!isAlphaNumeric(req.params.id)) {
+        const e = new Error("Company :id is invalid")
+        return next(buildError(e, errorResponsesConfig.invalidCompanyId, 400))
+      }
+
+      try {
+        await query("DELETE FROM companies WHERE company_id = $1", [req.params.id])
+
+        res.status(204).end()
+      } catch (err) {
+        next(buildError(err, errorResponsesConfig.general, 500))
+      }
+    }
+  )
 
   app.post(
     "/companies",
+    apiKeyValidator,
     checkSchema({
       name: {
         matches: {

@@ -3,6 +3,11 @@ import { CustomError } from "../utils/customError"
 import "dotenv/config"
 
 export const apiKeyValidator = (req: Request, res: Response, next: NextFunction): void => {
+  // check if API key validation required
+  if (!process.env.API_KEYS) {
+    return next()
+  }
+
   if (req.path === "/") {
     return next()
   }
