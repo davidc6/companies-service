@@ -10,9 +10,12 @@ Current demo url - https://companies-service.herokuapp.com/
 
 ## API
 
-* `/` - returns all possible endpoints
-* `/companies` - returns a list of companies
-* `/companies/{company_id}` - returns information about a single company
+* GET `/` - returns all possible endpoints
+* GET `/companies` - returns a list of companies
+* POST `/companies` - create a new company
+* GET `/companies/{company_id}` - returns information about a single company
+* DELETE `/companies/{company_id}` - delete a single company
+* PATCH `/companies/{company_id}` - update an existing company
 
 ## Environmental variables
 
@@ -23,7 +26,7 @@ Current demo url - https://companies-service.herokuapp.com/
 
 ## Authentication
 
-API key-based authentication can be used to limit access to all endpoints but `/`. This is controlled by settings an environmental variable (`API_KEYS`)
+API key-based authentication can be used to limit access to all endpoints but `/`. This is controlled by settings an environmental variable (`API_KEYS`). The key is sent via the `x-api-key` header.
 
 ## Logging
 
