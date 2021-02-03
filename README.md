@@ -4,7 +4,7 @@
 
 :construction::construction_worker: Work in progress :construction::construction_worker:
 
-This is an example of a web service written in Node.js.
+This is an example of a web service written in Node.js. The idea is to have the API return a list of information about various tech companies.
 
 Current demo url - https://companies-service.herokuapp.com/
 
