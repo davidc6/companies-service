@@ -34,7 +34,11 @@ The current version of the service logs to console only. A proper logging servic
 
 ## Testing
 
-* To do
+* To run unit tests: `npm run test:unit`
+* To run integration tests: `npm run test:integration`
+* To run all tests: `npm run test`
+
+Tests against the actual test database are in work in progress. 
 
 ### Todo list:
 
