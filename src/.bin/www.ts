@@ -19,6 +19,7 @@ const init = () => {
   }
 
   const PORT = normalizePort(process.env.PORT || LOCAL_PORT)
+  const HOST = process.env.HOST || "127.0.0.1"
 
   const onError = (e) => {
     if (e.syscall !== "listen") {
@@ -43,12 +44,17 @@ const init = () => {
 
   const onListening = () => {
     const addr = server.address()
-    const bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port
-    console.log("Listening on " + bind)
+    const address = typeof addr === "string" ? "" : addr.address
+    const port = typeof addr === "string" ? "" : addr.port
+
+    // const bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port
+    const at = `${address}:${port}`
+
+    console.log("Server running at http://" + at)
   }
 
   const server = http.createServer(app)
-  server.listen(PORT)
+  server.listen(PORT, HOST)
   server.on("listening", onListening)
   server.on("error", onError)
 }
