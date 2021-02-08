@@ -195,4 +195,32 @@ describe("Routes integration", () => {
       })
     })
   })
+
+  describe("/industries", () => {
+    describe("GET", () => {
+      it("should 200", async () => {
+        sandbox.stub(DB, "query").resolves({ rows: [] })
+        await request(app).get("/industries").expect(200)
+      })
+
+      it("should return a list of data", async () => {
+        sandbox.stub(DB, "query").resolves({ rows: [{ one: "one" }, { two: "two" }] })
+
+        const response = await request(app).get("/industries")
+        expect(response.body).to.deep.equal([{ one: "one" }, { two: "two" }])
+      })
+
+      it("should construct the correct SQL query", async () => {
+        const dbStub = sandbox.stub(DB, "query").resolves({ rows: [] })
+        await request(app).get("/industries")
+
+        expect(dbStub.firstCall.args[0]).to.equal("SELECT industry_id, description FROM industries")
+      })
+
+      it("should 500 if query fails", async () => {
+        sandbox.stub(DB, "query").rejects()
+        await request(app).get("/industries").expect(500)
+      })
+    })
+  })
 })

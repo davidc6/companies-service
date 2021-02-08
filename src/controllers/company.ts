@@ -17,7 +17,7 @@ class Company {
       const companies = await this.companyService.getAll()
       res.status(200).json(companies)
     } catch (err) {
-      next(buildError(err, errorResponsesConfig.noCompanies))
+      next(buildError(err, errorResponsesConfig.missing))
     }
   }
 
@@ -39,7 +39,7 @@ class Company {
         next(buildError(err, errorResponsesConfig.companyNotFound, 404))
       }
     } catch (err) {
-      next(buildError(err, errorResponsesConfig.noCompanies))
+      next(buildError(err, errorResponsesConfig.missing))
     }
   }
 

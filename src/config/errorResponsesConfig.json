@@ -1,5 +1,5 @@
 {
-  "noCompanies": {
+  "missing": {
     "title": "Oops, looks like something is missing.",
     "detail": "An error has occurred and we are working to fix the problem."
   },

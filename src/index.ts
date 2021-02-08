@@ -7,6 +7,7 @@ import { openApiValidator } from "./middleware/openapi"
 import { errorHandler } from "./middleware/errorHandler"
 import { loggerMiddleware } from "./middleware/logger"
 import { mountRoutes } from "./routes"
+import mountIndustryRoutes from "./routes/industry"
 
 const app = express()
 app.disable("x-powered-by")
@@ -26,6 +27,7 @@ if (process.env.SUPPRESS_LOGS === "false") {
 app.use(openApiValidator)
 
 mountRoutes(app)
+mountIndustryRoutes(app)
 
 // error handling middleware should come last
 // ref: https://expressjs.com/en/guide/error-handling.html

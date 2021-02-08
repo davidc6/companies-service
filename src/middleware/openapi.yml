@@ -77,6 +77,18 @@ paths:
           $ref: '#/components/responses/NoContent'
         '401':
           $ref: '#/components/responses/Unauthorized'
+  /industries:
+    get:
+      summary: Returns a list of all industries (subject to LIMIT value)
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Industries'
+        '400':
+          $ref: '#/components/responses/BadRequest'
 components:
   responses:
     BadRequest:
@@ -105,6 +117,10 @@ components:
     Root:
       type: object
     Companies:
+      type: array
+      items:
+        type: object
+    Industries:
       type: array
       items:
         type: object
