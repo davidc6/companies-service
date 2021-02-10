@@ -1,15 +1,15 @@
 language: node_js
 node_js:
-  - '14'
+- '14'
 install:
-  - npm install
+- npm install
 script:
-  - npm run lint
-  - npm run test
-  - npm run build
+- npm run lint
+- npm run test
+- npm run build
 deploy:
   provider: heroku
-  api_key: $API_KEY
+  api_key:
+    secure: n3ZcIxjFZuMWEhpFEnDBNdG34IYbR4r0UhnjSmP/PBkM0CEg1JZJwi+v2KGueZkXEFGLbH49z5/zCmR6CekdcADmS7Sm5ikYAHzvXQRvhEE9Y918Jql3sWUJO271Vq3zmwZWZCknyOxX946jA+I08jrPQOwbp3FTL73sZgHiaXgVuvFPyVsCB7KZuoSIcTZLZEd59I79oUtCimtGIfiz/OFdgaRYIRwpgj0qzkqx4Jz8a7gcdFyNgcVvqg1QbdYxJvkB2qm/YSQrU43ZYu5tScZDQZIYc45PRvBGMdbKYK+6TBfRwQJJbPEASJ+QNKdRJU37RvIC7PHgDtqPT4jhcDJzIg8sWP3E2HXso77A/n5aWS85tlhrRSiOr1y2vj8jCD5sp1qThVFCqt1no0fkqhO9cZ1BsYuUyfeTPfEEDrCf0/84w/+fp6fsqHHnDjOTKoB2a4JpbHsatXyjdyr550YAWSOyMqRZicjdeiu7CedmXdVxMiMLp4q5HSEwLXr22X5PxjwC3r7MbEVn+y+BipAZmaSSVuj9N/4FbAhrtgHpp9H8bXF1bvMJ8tAzJRv1CLiy9c2pEyo7kgE1Fx3fc9uSe9z9xL4yU9fMdWAwr0AKRO56bBGXscf3hZA4c7Zj+zmgiFLAbDN6hJzZLqYDOr3ZMc7QEbBmi7z5RFAeLsc=
   on:
     branch: main
-    
