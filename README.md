@@ -10,12 +10,15 @@ Current demo url - https://companies-service.herokuapp.com/
 
 ## API
 
-* GET `/` - returns all possible endpoints
-* GET `/companies` - returns a list of companies
-* POST `/companies` - create a new company
-* GET `/companies/{company_id}` - returns information about a single company
-* DELETE `/companies/{company_id}` - delete a single company
-* PATCH `/companies/{company_id}` - update an existing company
+* `GET /` - returns all possible endpoints
+* `GET /companies` - returns a list of companies
+
+Operations that mutate data (see below) require an api key.
+
+* `POST /companies` - create a new company
+* `GET /companies/{company_id}` - returns information about a single company
+* `DELETE /companies/{company_id}` - delete a single company
+* `PATCH /companies/{company_id}` - update an existing company
 
 ## Environmental variables
 

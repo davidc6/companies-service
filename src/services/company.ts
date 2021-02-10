@@ -6,7 +6,7 @@ type CompanyType = {
   name: string
   summary: string
   careers: string
-  industry: string
+  industry_id: string
   founded: number
   github: string
   blog: string
@@ -17,12 +17,24 @@ type PatchData = {
 }
 
 const COMPANY_SELECT_FIELDS = [
+  "companies.company_id",
+  "companies.name",
+  "companies.summary",
+  "companies.careers",
+  "companies.founded",
+  "companies.github",
+  "companies.blog",
+  "industries.industry_id",
+  "industries.description AS industry_description",
+]
+
+const COMPANY_INSERT_FIELDS = [
   "company_id",
   "name",
   "summary",
   "careers",
-  "industry",
   "founded",
+  "industry_id",
   "github",
   "blog",
 ]
@@ -34,7 +46,7 @@ class Company {
     const { rows } = await query(
       `SELECT ${COMPANY_SELECT_FIELDS.join(
         ", "
-      )} FROM ${TABLE_NAME} ORDER BY company_id ASC LIMIT 10`
+      )} FROM ${TABLE_NAME} INNER JOIN industries ON companies.industry_id=industries.industry_id ORDER BY company_id ASC LIMIT 10`
     )
 
     return rows
@@ -42,7 +54,9 @@ class Company {
 
   async getById(id: string): Promise<CompanyType> {
     const { rows } = await query(
-      `SELECT ${COMPANY_SELECT_FIELDS.join(", ")} FROM ${TABLE_NAME} WHERE company_id = $1 LIMIT 1`,
+      `SELECT ${COMPANY_SELECT_FIELDS.join(
+        ", "
+      )} FROM ${TABLE_NAME} INNER JOIN industries ON companies.industry_id=industries.industry_id WHERE company_id = $1 LIMIT 1`,
       [id]
     )
 
@@ -76,28 +90,36 @@ class Company {
 
   async create(data: CompanyType): Promise<CompanyType> {
     const insert = `INSERT INTO ${TABLE_NAME}`
-    const fields = `(${COMPANY_SELECT_FIELDS.join(", ")})`
-    const values = `VALUES (${COMPANY_SELECT_FIELDS.map((val, index) => `$${index + 1}`).join(
+    const fields = `(${COMPANY_INSERT_FIELDS.join(", ")})`
+    const values = `VALUES (${COMPANY_INSERT_FIELDS.map((val, index) => `$${index + 1}`).join(
       ", "
     )})`
-    const returning = `RETURNING ${COMPANY_SELECT_FIELDS.join(", ")}`
-    const q = `${insert} ${fields} ${values} ${returning}`
+    const returning = `RETURNING *`
+    const insertQuery = `${insert} ${fields} ${values} ${returning}`
 
-    const { company_id, name, summary, careers, industry, founded, github, blog } = data
+    const { company_id, name, summary, careers, industry_id, founded, github, blog } = data
+
+    // order is important for parameterized query
     const bodyValues = [
       company_id,
       name,
       summary,
       careers,
-      industry,
       founded,
+      industry_id,
       github,
       blog,
     ] as string[]
 
-    const company = await query(q, bodyValues)
+    const company = await query(insertQuery, bodyValues)
 
-    return company.rows[0]
+    const selectFrom = `SELECT ${COMPANY_SELECT_FIELDS} FROM ${TABLE_NAME}`
+    const leftJoin = `LEFT JOIN industries ON companies.industry_id=industries.industry_id`
+    const where = `WHERE companies.id = ${company.rows[0].id}`
+
+    const companyResult = await query(`${selectFrom} ${leftJoin} ${where}`)
+
+    return companyResult.rows[0]
   }
 }
 

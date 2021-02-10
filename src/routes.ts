@@ -55,10 +55,11 @@ const mountRoutes = (app: Application): void => {
           errorMessage: "format is incorrect",
         },
       },
-      industry: {
-        isAlpha: {
+      industry_id: {
+        matches: {
           bail: true,
-          errorMessage: "should only contain letters",
+          options: [/^[a-zA-Z_]*$/, "g"],
+          errorMessage: "should only contain letters and _",
         },
       },
     }),

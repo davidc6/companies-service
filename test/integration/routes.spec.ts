@@ -94,7 +94,7 @@ describe("Routes integration", () => {
         await request(app).get("/companies")
 
         expect(dbStub.firstCall.args[0]).to.equal(
-          "SELECT company_id, name, summary, careers, industry, founded, github, blog FROM companies ORDER BY company_id ASC LIMIT 10"
+          "SELECT companies.company_id, companies.name, companies.summary, companies.careers, companies.founded, companies.github, companies.blog, industries.industry_id, industries.description AS industry_description FROM companies INNER JOIN industries ON companies.industry_id=industries.industry_id ORDER BY company_id ASC LIMIT 10"
         )
       })
 
@@ -111,7 +111,7 @@ describe("Routes integration", () => {
           name: "name",
           summary: "summary",
           careers: "careers",
-          industry: "industry",
+          industry_id: "industry",
           founded: 2021,
           github: "github",
           blog: "blog",
@@ -122,10 +122,9 @@ describe("Routes integration", () => {
         await request(app).post("/companies").send(obj).expect(201)
 
         const queryPartOne =
-          "INSERT INTO companies (company_id, name, summary, careers, industry, founded, github, blog)"
+          "INSERT INTO companies (company_id, name, summary, careers, founded, industry_id, github, blog)"
         const queryPartTwo = "VALUES ($1, $2, $3, $4, $5, $6, $7, $8)"
-        const queryPartThree =
-          "RETURNING company_id, name, summary, careers, industry, founded, github, blog"
+        const queryPartThree = "RETURNING *"
 
         expect(dbStub.firstCall.args[0]).to.equal(
           `${queryPartOne} ${queryPartTwo} ${queryPartThree}`
@@ -135,8 +134,8 @@ describe("Routes integration", () => {
           "name",
           "summary",
           "careers",
-          "industry",
           2021,
+          "industry",
           "github",
           "blog",
         ])
@@ -148,7 +147,7 @@ describe("Routes integration", () => {
           name: "name",
           summary: "summary",
           careers: "careers",
-          industry: "industry",
+          industry_id: "industry",
           founded: 2021,
           github: "github",
           blog: "blog",
@@ -165,7 +164,7 @@ describe("Routes integration", () => {
           name: "name",
           summary: "summary",
           careers: "careers",
-          industry: "industry",
+          industry_id: "industry",
           founded: 2021,
           github: "github",
           blog: "blog",
@@ -183,7 +182,7 @@ describe("Routes integration", () => {
           name: "name",
           summary: "summary",
           careers: "careers",
-          industry: "industry",
+          industry_id: "industry",
           founded: 2021,
           github: "github",
           blog: "blog",

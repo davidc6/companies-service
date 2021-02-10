@@ -136,7 +136,7 @@ components:
           type: string
         careers:
           type: string
-        industry:
+        industry_id:
           type: string
         founded:
           type: integer
@@ -149,7 +149,7 @@ components:
         - name
         - summary
         - careers
-        - industry
+        - industry_id
         - founded
         - github
         - blog
@@ -164,7 +164,7 @@ components:
           type: string
         careers:
           type: string
-        industry:
+        industry_id:
           type: string
         founded:
           type: integer
