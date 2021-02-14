@@ -14,5 +14,9 @@
   "general": {
     "title": "Sorry, something went wrong.",
     "detail": "An error has occurred and we are working to fix the problem."
+  },
+  "requestLimit": {
+    "title": "You have exceeded your rate limit.",
+    "detail": "This service has a request rate limit and it has now been reached. Please try again later."
   }
 }
