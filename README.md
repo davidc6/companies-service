@@ -8,32 +8,32 @@ This is an example of a web service written in Node.js. The idea is to have the 
 
 Current demo url - https://companies-service.herokuapp.com/
 
-## API
+## API endpoints
 
-* `GET /` - returns all possible endpoints
+* `GET /` - returns all possible accessible endpoints
 * `GET /companies` - returns a list of companies
+* `GET /companies/{company_id}` - returns information about a single company
 
 Operations that mutate data (see below) require an api key.
 
-* `POST /companies` - create a new company
-* `GET /companies/{company_id}` - returns information about a single company
-* `DELETE /companies/{company_id}` - delete a single company
-* `PATCH /companies/{company_id}` - update an existing company
+* `POST /companies` - creates a new company
+* `DELETE /companies/{company_id}` - deletes a single company
+* `PATCH /companies/{company_id}` - updates (fully or partially) an existing company
 
 ## Environmental variables
 
-* `API_KEYS` - api keys that allow access to restricted resources. Multiple keys should be separated by the comma (<api_key_one>,<api_key_two>). Not setting or leaving this variable will disable authentication.
-* `PORT` - for setting the listening port.
-* `DATABASE_URL` - a string that contains database information.
-* `SUPPRESS_LOGS` - can be `true` or `false` and allows to suppress logging; this is helpful when developing locally
+* `API_KEYS` - api keys that allow access to restricted resources. Multiple keys can be included and a comma should be used to separate values (<api_key_one>,<api_key_two>). Not setting or leaving this variable empty will disable authentication.
+* `PORT` - port to listen on
+* `DATABASE_URL` - a string that contains database information
+* `SUPPRESS_LOGS` - can be `true` or `false` and allows to suppress logging. This is useful when developing locally
 
 ## Authentication
 
-API key-based authentication can be used to limit access to all endpoints but `/`. This is controlled by settings an environmental variable (`API_KEYS`). The key is sent via the `x-api-key` header.
+API key-based authentication can be used to limit access to endpoints that mutate data. This is controlled by settings `API_KEYS ` environmental variable. The key is sent via the `x-api-key` header.
 
 ## Logging
 
-The current version of the service logs to console only. A proper logging service should be used in production. On top of that more sensitive information (such as ip address, user agent, etc.) should be logged.
+The current version of the service logs to stdout only. A proper logging service should be used in production. Sensitive information (such as ip addresses, user agents, etc.) could be logged for security purposes.
 
 ## Testing
 
