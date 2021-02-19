@@ -20,7 +20,7 @@ app.use(cors())
 app.use(
   rateLimiter({
     windowMs: 60 * 60 * 1000,
-    max: 50,
+    max: 100,
   })
 )
 
