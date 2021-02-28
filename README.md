@@ -35,6 +35,16 @@ API key-based authentication can be used to limit access to endpoints that mutat
 
 The current version of the service logs to stdout only. A proper logging service should be used in production. Sensitive information (such as ip addresses, user agents, etc.) could be logged for security purposes.
 
+## Database schemas
+
+### Industries table
+
+```
+| id        | industry_id    | description    |
+|-----------|----------------|----------------|
+| integer   | varchar(50)    | varchar(50)    | 
+```
+
 ## Testing
 
 * To run unit tests: `npm run test:unit`
