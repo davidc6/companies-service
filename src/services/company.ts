@@ -43,22 +43,31 @@ const TABLE_NAME = "companies"
 
 class Company {
   async getAll(): Promise<CompanyType[]> {
-    const { rows } = await query(
-      `SELECT ${COMPANY_SELECT_FIELDS.join(
-        ", "
-      )} FROM ${TABLE_NAME} INNER JOIN industries ON companies.industry_id=industries.industry_id ORDER BY company_id ASC LIMIT 10`
-    )
+    // get all companies and counts jobs available in each company
+    const q =
+      `SELECT ${COMPANY_SELECT_FIELDS.join(", ")}, (` +
+      `SELECT COUNT(*) FROM ( ` +
+      `SELECT jobs.job_id, jobs.title FROM jobs WHERE jobs.company_id=companies.id ) d` +
+      `) as total_job_count FROM companies INNER JOIN industries ON companies.industry_id=industries.industry_id`
+
+    const { rows } = await query(q)
 
     return rows
   }
 
   async getById(id: string): Promise<CompanyType> {
-    const { rows } = await query(
-      `SELECT ${COMPANY_SELECT_FIELDS.join(
-        ", "
-      )} FROM ${TABLE_NAME} INNER JOIN industries ON companies.industry_id=industries.industry_id WHERE company_id = $1 LIMIT 1`,
-      [id]
-    )
+    // return company data and jobs associated with the company
+    // array_to_json() - takes in an array an flattens into a single JSON
+    // array_agg() - aggregate functions which aggregates arguments in an array
+    // row_to_json(d) - takes in a row and returns a JSON from subquery
+    const q =
+      `SELECT ${COMPANY_SELECT_FIELDS.join(", ")}, (` +
+      `SELECT array_to_json(array_agg(row_to_json(d))) FROM ( ` +
+      `SELECT jobs.job_id, jobs.title FROM jobs WHERE jobs.company_id=companies.id ) d` +
+      `) as jobs FROM companies INNER JOIN industries ON companies.industry_id=industries.industry_id ` +
+      `WHERE company_id = $1 LIMIT 1`
+
+    const { rows } = await query(q, [id])
 
     return rows[0]
   }
